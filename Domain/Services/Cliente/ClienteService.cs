@@ -1,4 +1,5 @@
 ﻿using Application.Boundaries.Cliente.PostCliente;
+using Domain.Dtos.Cliente.DeleteCliente;
 using Domain.Dtos.Cliente.PostCliente;
 using Domain.Interfaces.Cliente;
 using Domain.Services.Cliente.Interface;
@@ -18,6 +19,12 @@ namespace Domain.Services.Cliente
         public async Task<PostClienteOutputDto> PostClienteAsync(PostClienteInputDto input)
         {
             return await _repository.PostClienteAsync(input)
+                                    .ConfigureAwait(false);
+        }
+
+        public async Task<bool> DeleteClienteAsync(DeleteClienteInputDto input)
+        {
+            return await _repository.DeleteClienteAsync(input)
                                     .ConfigureAwait(false);
         }
     }

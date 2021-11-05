@@ -1,4 +1,5 @@
-﻿using Application.Boundaries.Cliente.PostCliente;
+﻿using Application.Boundaries.Cliente.DeleteCliente;
+using Application.Boundaries.Cliente.PostCliente;
 using Application.UseCase.Cliente.Interface;
 using Application.UseCase.Cliente.Mapper;
 using Domain.Services.Cliente.Interface;
@@ -33,7 +34,22 @@ namespace Application.UseCase.Cliente
                 return default;
             }
 
-            return outputDto.MapPostClienteDtoToOutput();
+            return outputDto.MapDtoToOutput();
+        }
+
+        public async Task<bool> DeleteClienteAsync(DeleteClienteInput input)
+        {
+            var inputDto = input.MapInputToDto();
+
+            var outputDto = await _service.DeleteClienteAsync(inputDto).ConfigureAwait(false);
+
+            if (!outputDto)
+            {
+                var message = $"Não foi possível deletar o Cliente";
+                await InvalidClienteUseCase(message).ConfigureAwait(false);
+            }
+
+            return outputDto;
         }
 
         #region Private

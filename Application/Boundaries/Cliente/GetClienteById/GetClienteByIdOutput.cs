@@ -1,8 +1,8 @@
-﻿namespace Domain.Dtos.Cliente.PostCliente
+﻿namespace Application.Boundaries.Cliente.GetClienteById
 {
-    public class PostClienteOutputDto
+    public class GetClienteByIdOutput
     {
-        public PostClienteOutputDto(string id, 
+        public GetClienteByIdOutput(string id,
                                     string name)
         {
             Id = id;

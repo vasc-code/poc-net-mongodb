@@ -1,10 +1,13 @@
-﻿using Application.Boundaries.Cliente.GetCliente;
+﻿using Application.Boundaries.Cliente.GetClienteById;
+using Application.Boundaries.Cliente.GetClientes;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Application.Queries.Cliente.Interface
 {
     public interface IClienteQuery
     {
-        Task<GetClienteOutput> GetClienteAsync(GetClienteInput input);
+        Task<IEnumerable<GetClientesOutput>> GetClientesAsync();
+        Task<GetClienteByIdOutput> GetClienteByIdAsync(GetClienteByIdInput input);
     }
 }

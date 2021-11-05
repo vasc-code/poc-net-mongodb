@@ -17,6 +17,7 @@ namespace Bootstrap
         internal static void AddApplication(this IServiceCollection services)
         {
             services.AddTransient<IRequestHandler<PostClienteCommand, PostClienteOutput>, PostClienteHandler>();
+            services.AddTransient<IRequestHandler<DeleteClienteCommand, bool>, DeleteClienteHandler>();
 
             services.AddScoped<IClienteUseCase, ClienteUseCase>();
 

@@ -1,5 +1,8 @@
-﻿using Application.Boundaries.Cliente.PostCliente;
+﻿using Application.Boundaries.Cliente.DeleteCliente;
+using Application.Boundaries.Cliente.PostCliente;
+using Domain.Dtos.Cliente.DeleteCliente;
 using Domain.Dtos.Cliente.PostCliente;
+using MongoDB.Bson;
 
 namespace Application.UseCase.Cliente.Mapper
 {
@@ -13,7 +16,7 @@ namespace Application.UseCase.Cliente.Mapper
             );
         }
 
-        internal static PostClienteOutput MapPostClienteDtoToOutput(this PostClienteOutputDto input)
+        internal static PostClienteOutput MapDtoToOutput(this PostClienteOutputDto input)
         {
             return new PostClienteOutput
             (
@@ -21,5 +24,14 @@ namespace Application.UseCase.Cliente.Mapper
                 input.Name
             );
         }
+
+        internal static DeleteClienteInputDto MapInputToDto(this DeleteClienteInput input)
+        {
+            return new DeleteClienteInputDto
+            (
+                ObjectId.Parse(input.Id)
+            );
+        }
+
     }
 }
