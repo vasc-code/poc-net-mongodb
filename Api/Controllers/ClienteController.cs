@@ -1,0 +1,112 @@
+﻿using Application.Boundaries.Cliente.GetCliente;
+using Application.Boundaries.Cliente.PostCliente;
+using Application.Commands.Cliente;
+using Application.Queries.Cliente.Interface;
+using Infrastructure.Messages;
+using Infrastructure.Messages.Interfaces;
+using Infrastructure.Middlewares.Retry.Interface;
+using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Threading.Tasks;
+
+namespace Api.Controllers
+{
+    [ApiController]
+    [Route("[Controller]")]
+    public class ClienteController : BaseController<ClienteController>
+    {
+        private readonly IRetryMiddleware _retry;
+        private readonly int _retryCount;
+        private readonly int _nextRetryInSeconds;
+        private readonly IClienteQuery _mongoQuery;
+        private readonly IMessagesHandler _messagesHandler;
+
+        public ClienteController(INotificationHandler<DomainNotification> notifications,
+                                 IMessagesHandler messagesHandler,
+                                 IRetryMiddleware retry,
+                                 IConfiguration configuration,
+                                 IClienteQuery mongoQuery) : base(notifications)
+        {
+            _messagesHandler = messagesHandler;
+            _retry = retry;
+            _retryCount = Convert.ToInt32(configuration.GetSection("RetryCount").Value);
+            _nextRetryInSeconds = Convert.ToInt32(configuration.GetSection("NextRetryInSeconds").Value);
+            _mongoQuery = mongoQuery;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetClienteOutput))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCliente([FromQuery] GetClienteInput input)
+        {
+            ConfigureRetry(nameof(GetCliente));
+
+            var output = await GetClienteAsync(input).ConfigureAwait(false);
+
+            if (IsValidOperation())
+            {
+                return StatusCode(StatusCodes.Status200OK, output);
+            }
+
+            return StatusCode(StatusCodes.Status400BadRequest, GetErrorMessages());
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(PostClienteOutput))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PostCliente([FromQuery] PostClienteInput input)
+        {
+            ConfigureRetry(nameof(PostCliente));
+
+            var output = await PostClienteAsync(input).ConfigureAwait(false);
+
+            if (IsValidOperation())
+            {
+                return StatusCode(StatusCodes.Status201Created, output);
+            }
+
+            return StatusCode(StatusCodes.Status400BadRequest, GetErrorMessages());
+        }
+
+        #region Private
+        private async Task<GetClienteOutput> GetClienteAsync(GetClienteInput input)
+        {
+            return await _retry.RetryException.ExecuteAsync
+            (
+                async () => await _mongoQuery.GetClienteAsync(input)
+                                            .ConfigureAwait(false)
+            ).ConfigureAwait(false);
+        }
+
+        private async Task<PostClienteOutput> PostClienteAsync(PostClienteInput input)
+        {
+            return await _retry.RetryException.ExecuteAsync
+            (
+                async () => await _messagesHandler.SendCommandAsync<PostClienteCommand, PostClienteOutput>
+                (
+                    new PostClienteCommand { Input = input }
+                ).ConfigureAwait(false)
+            ).ConfigureAwait(false);
+        }
+
+        private void ConfigureRetry(string retryContext)
+        {
+            _retry.ConfigureRetryException
+            (
+                _retryCount,
+                _nextRetryInSeconds,
+                retryContext
+            );
+        }
+        #endregion
+    }
+}
