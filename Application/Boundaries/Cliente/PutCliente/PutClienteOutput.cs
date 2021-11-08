@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace Domain.Dtos.Cliente.PostCliente
+namespace Application.Boundaries.Cliente.PutCliente
 {
-    public class PostClienteOutputDto
+    public class PutClienteOutput
     {
-        public PostClienteOutputDto(string id, 
-                                    string name, 
-                                    DateTime? birthDate, 
-                                    string zipCode)
+        public PutClienteOutput(string id,
+                                string name,
+                                DateTime? birthDate,
+                                string zipCode)
         {
             Id = id;
             Name = name;

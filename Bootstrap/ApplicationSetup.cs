@@ -1,4 +1,5 @@
 ﻿using Application.Boundaries.Cliente.PostCliente;
+using Application.Boundaries.Cliente.PutCliente;
 using Application.Commands.Cliente;
 using Application.Handlers.Cliente;
 using Application.Queries.Cliente.Interface;
@@ -17,6 +18,7 @@ namespace Bootstrap
         internal static void AddApplication(this IServiceCollection services)
         {
             services.AddTransient<IRequestHandler<PostClienteCommand, PostClienteOutput>, PostClienteHandler>();
+            services.AddTransient<IRequestHandler<PutClienteCommand, PutClienteOutput>, PutClienteHandler>();
             services.AddTransient<IRequestHandler<DeleteClienteCommand, bool>, DeleteClienteHandler>();
 
             services.AddScoped<IClienteUseCase, ClienteUseCase>();

@@ -2,6 +2,7 @@
 using Application.Boundaries.Cliente.GetClienteById;
 using Application.Boundaries.Cliente.GetClientes;
 using Application.Boundaries.Cliente.PostCliente;
+using Application.Boundaries.Cliente.PutCliente;
 using Application.Commands.Cliente;
 using Application.Queries.Cliente.Interface;
 using Infrastructure.Messages;
@@ -100,6 +101,26 @@ namespace Api.Controllers
             return StatusCode(StatusCodes.Status400BadRequest, GetErrorMessages());
         }
 
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PutClienteOutput))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PutCliente([FromBody] PutClienteInput input)
+        {
+            ConfigureRetry(nameof(PutCliente));
+
+            var output = await PutClienteAsync(input).ConfigureAwait(false);
+
+            if (IsValidOperation())
+            {
+                return StatusCode(StatusCodes.Status201Created, output);
+            }
+
+            return StatusCode(StatusCodes.Status400BadRequest, GetErrorMessages());
+        }
+
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -146,6 +167,17 @@ namespace Api.Controllers
                 async () => await _messagesHandler.SendCommandAsync<PostClienteCommand, PostClienteOutput>
                 (
                     new PostClienteCommand { Input = input }
+                ).ConfigureAwait(false)
+            ).ConfigureAwait(false);
+        }
+
+        private async Task<PutClienteOutput> PutClienteAsync(PutClienteInput input)
+        {
+            return await _retry.RetryException.ExecuteAsync
+            (
+                async () => await _messagesHandler.SendCommandAsync<PutClienteCommand, PutClienteOutput>
+                (
+                    new PutClienteCommand { Input = input }
                 ).ConfigureAwait(false)
             ).ConfigureAwait(false);
         }

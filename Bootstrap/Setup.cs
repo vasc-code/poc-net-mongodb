@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bootstrap
 {
     public static class Setup
     {
-        public static void Register(this IServiceCollection services, IConfiguration configuration)
+        public static void Register(this IServiceCollection services)
         {
             services.AddSwagger();
-            services.AddInfrastructure(configuration);
+            services.AddInfrastructure();
             services.AddRepository();
             services.AddApplication();
         }

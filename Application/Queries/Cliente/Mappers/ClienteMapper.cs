@@ -17,7 +17,9 @@ namespace Application.Queries.Cliente.Mappers
             {
                 list.Add(new GetClientesOutput(
                     item.Id.ToString(), 
-                    item.Name
+                    item.Name,
+                    item.BirthDate,
+                    item.ZipCode
                 ));
             }
 
@@ -43,7 +45,9 @@ namespace Application.Queries.Cliente.Mappers
         {
             return new GetClienteByIdOutput(
                 input.Id.ToString(),
-                input.Name
+                input.Name,
+                input.BirthDate,
+                input.ZipCode
             );
         }
     }

@@ -4,12 +4,14 @@ using System;
 
 namespace Application.Boundaries.Cliente.PostCliente
 {
-    public class PostClienteInputDto
+    public class PutClienteInputDto
     {
-        public PostClienteInputDto(string name,
-                                   DateTime? birthDate,
-                                   string zipCode)
+        public PutClienteInputDto(ObjectId id, 
+                                  string name,
+                                  DateTime? birthDate,
+                                  string zipCode)
         {
+            Id = id;
             Name = name;
             BirthDate = birthDate;
             ZipCode = zipCode;

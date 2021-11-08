@@ -8,8 +8,8 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["Api/", "Api/"]
 COPY ["Application/", "Application/"]
-COPY ["Application/Protos", "Application/Protos"]
 COPY ["Domain/", "Domain/"]
+COPY ["Repository/", "Repository/"]
 COPY ["Infrastructure/", "Infrastructure/"]
 COPY ["Bootstrap/", "Bootstrap/"]
 RUN dotnet restore "Api/Api.csproj"

@@ -10,7 +10,7 @@ namespace Bootstrap
 {
     internal static class InfrastructureSetup
     {
-        internal static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        internal static void AddInfrastructure(this IServiceCollection services)
         {
             services.AddScoped<IRetryMiddleware, RetryMiddleware>();
             services.AddScoped<IMessagesHandler, MessagesHandler>();

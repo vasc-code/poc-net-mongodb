@@ -1,5 +1,6 @@
 ﻿using Application.Boundaries.Cliente.DeleteCliente;
 using Application.Boundaries.Cliente.PostCliente;
+using Application.Boundaries.Cliente.PutCliente;
 using Application.UseCase.Cliente.Interface;
 using Application.UseCase.Cliente.Mapper;
 using Domain.Services.Cliente.Interface;
@@ -30,6 +31,22 @@ namespace Application.UseCase.Cliente
             if (outputDto == null)
             {
                 var message = $"Não foi possível criar o Cliente";
+                await InvalidClienteUseCase(message).ConfigureAwait(false);
+                return default;
+            }
+
+            return outputDto.MapDtoToOutput();
+        }
+
+        public async Task<PutClienteOutput> PutClienteAsync(PutClienteInput input)
+        {
+            var inputDto = input.MapInputToDto();
+
+            var outputDto = await _service.PutClienteAsync(inputDto).ConfigureAwait(false);
+
+            if (outputDto == null)
+            {
+                var message = $"Não foi possível atualizar o Cliente";
                 await InvalidClienteUseCase(message).ConfigureAwait(false);
                 return default;
             }

@@ -3,6 +3,7 @@ using Domain.Dtos.Cliente.DeleteCliente;
 using Domain.Dtos.Cliente.GetClienteById;
 using Domain.Dtos.Cliente.GetClientes;
 using Domain.Dtos.Cliente.PostCliente;
+using Domain.Dtos.Cliente.PutCliente;
 using Domain.Interfaces.Cliente;
 using MongoDB.Driver;
 using System;
@@ -33,7 +34,22 @@ namespace Repository.Cliente
 
             return new PostClienteOutputDto(
                 input.Id.ToString(), 
-                input.Name
+                input.Name,
+                input.BirthDate,
+                input.ZipCode
+            );
+        }
+        public async Task<PutClienteOutputDto> PutClienteAsync(PutClienteInputDto input)
+        {
+            var db = _database.GetCollection<PutClienteInputDto>(COLLECTION_NAME);
+
+            await db.ReplaceOneAsync(c => c.Id == input.Id, input).ConfigureAwait(false);
+
+            return new PutClienteOutputDto(
+                input.Id.ToString(), 
+                input.Name,
+                input.BirthDate,
+                input.ZipCode
             );
         }
 
