@@ -22,7 +22,7 @@ namespace Api
         {
             services.AddMediatR(typeof(Startup));
             services.AddControllers();
-            services.Register(Configuration);
+            services.Register();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
