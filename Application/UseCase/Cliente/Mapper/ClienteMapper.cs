@@ -16,7 +16,7 @@ namespace Application.UseCase.Cliente.Mapper
             return new PostClienteInputDto
             (
                 input.Name,
-                DateTime.UtcNow,
+                input.BirthDate,
                 input.ZipCode
             );
         }
